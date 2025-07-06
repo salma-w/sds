@@ -41,7 +41,6 @@ async def chat(message, history):
 
 
 def get_interface():
-    # ---------- Interface ----------
     theme = gr.themes.Default(
         primary_hue="sky", neutral_hue="slate", font=[fonts.GoogleFont("Poppins"), "sans-serif"]
     )
@@ -50,22 +49,17 @@ def get_interface():
         title=f"{name} | Digital Twin",
         theme=theme,
     ) as interface:
-        # ---------- Header ----------
         with gr.Row(elem_classes="header-container"):
             gr.HTML(f"""
                 <div class="main-title">{name}'s&nbsp;Digital&nbsp;Twin</div>
                 <div class="subtitle">Ask me anything about my professional background, skills, and experience.</div>
             """)
-
-        # ---------- Example buttons ----------
         with gr.Row(elem_classes="examples-container"):
             gr.HTML('<div class="examples-title">💡 Try asking:</div>')
             with gr.Row():
                 example_buttons = [
                     gr.Button(q, elem_classes="example-btn", size="sm") for q in EXAMPLE_QUESTIONS
                 ]
-
-        # ---------- Chat component ----------
         chatbot_interface = gr.ChatInterface(
             fn=chat,
             type="messages",
@@ -83,11 +77,8 @@ def get_interface():
                 scale=7,
             ),
         )
-
         for btn in example_buttons:
             btn.click(lambda q: q, inputs=[btn], outputs=[chatbot_interface.textbox])
-
-        # ---------- Footer ----------
         gr.HTML(f"<div class='footer'>{name}'s Digital Twin</div>")
 
     return interface

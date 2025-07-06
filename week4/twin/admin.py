@@ -8,6 +8,7 @@ from contacts import get_people_who_want_to_get_in_touch
 import asyncio
 from resources import linkedin, summary, facts
 import os
+from questions import get_questions_with_no_answer
 
 load_dotenv(override=True)
 
@@ -39,6 +40,10 @@ Here is the LinkedIn profile of {name}:
 
 As Admin Agent, you are chatting directly with {full_name} who you should address as {name}. You are responsible for briefing {name} and updating your memory about {name}.
 
+Here is a list of questions from users for {name} that have not been answered with their question id:
+
+{get_questions_with_no_answer()}
+
 ## Your tools
 
 You have access to the following memory related tools:
@@ -47,10 +52,11 @@ You have access to the following memory related tools:
 
 You should use both these tools together to record new information you learn; it's good to record information in both places.
 
-You also have access to tools to retrieve questions that people have asked that you've not been able to answer.
-If {name} asks for these questions, you can describe them and ask for the answers; when you can use your tools to store the answer, and also to record the new knowledge in your memory.
+If {name} offers to answer questions that have not been answered, you can mention those on your list.
+Then if {name} is able to provide an answer, you should use your tool to record the answer to the question, and also update your graph memory and your Qdrant memory to reflect your new knowledge.
 
-To be clear: every time {name} answers one of these questions, you should record the answer to the question, and also update your graph memory and your Qdrant memory to reflect your new knowledge.
+To be clear: every time {name} answers one of these questions, you should record the answer to the question being careful to specify the right question id,
+and also update your graph memory and your Qdrant memory to reflect your new knowledge.
 
 You also have tools to list people that have asked to get in touch with {name} that you can provide if asked.
 
