@@ -176,12 +176,12 @@ cython_debug/
 .DS_Store
 
 
-week1/vector_db/
-week2/questions.jsonl
-week2/prices.db
+cohort1/week1/vector_db/
+cohort1/week2/questions.jsonl
+cohort1/week2/prices.db
 
-week4/prices.db
-week4/twin/contacts.db
-week4/twin/memory
+cohort1/week4/prices.db
+cohort1/week4/twin/contacts.db
+cohort1/week4/twin/memory
 
 
