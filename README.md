@@ -11,7 +11,17 @@ This repo is for the first 4 weeks where we immerse ourselves in LLMs and Agents
 
 Please reach out to me on Slack at any time if I can help.
 
-But first - the setup instructions.
+PRE-WORK:
+
+Please check out this 3-hour course. You should have access to it through your SuperDataScience credentials:
+
+https://community.superdatascience.com/c/ai-engineering-essentials-part-1
+
+First, read the course description. If you're not familiar with this material already (like, making API calls to the OpenAI API) then please take this course in advance.
+
+We will very briefly recap this at the time..
+
+And now - the setup instructions:
 
 - Windows people, your instructions are [here](setup/SETUP-PC.md)
 - Mac people, yours are [here](setup/SETUP-mac.md)
