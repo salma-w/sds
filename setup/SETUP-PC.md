@@ -6,7 +6,7 @@ Welcome, PC people!
 
 Setting up a powerful environment to work at the forefront of AI is not as easy as I'd like. It can be challenging. But I really hope these instructions are bullet-proof!
 
-If you hit problems, please don't hesitate to reach out. I am here to get you up and running quickly. There's nothing worse than feeling _stuck_. Message me, email me or LinkedIn message me and I will unstick you quickly!
+If you hit problems, please don't hesitate to reach out. I am here to get you up and running quickly.
 
 Email: ed@edwarddonner.com  
 LinkedIn: https://www.linkedin.com/in/eddonner/  
@@ -68,7 +68,7 @@ This creates a new directory `sds` within your Projects folder and downloads the
 
 ### Part 2: Install Cursor
 
-A word about Cursor: it's a cool product, but it's not to everyone's liking. It can also have a habit of being flakey with the AI recommendations. As student Alireza points out, you can use VS Code (or any IDE) in its place if you prefer. Cursor itself is built from VS Code and everything on this course will work fine in either.
+A word about Cursor: it's a cool product, but it's not to everyone's liking. It can also have a habit of being flakey with the AI recommendations. You can use VS Code (or any IDE) in its place if you prefer. Cursor itself is built from VS Code and everything on this course will work fine in either.
 
 1. Visit cursor at https://www.cursor.com/
 2. Click Sign In on the top right, then Sign Up, to create your account
@@ -98,7 +98,7 @@ Follow the instructions here to install uv - I recommend using the Standalone In
 https://docs.astral.sh/uv/getting-started/installation/
 
 Then within Cursor, select View >> Terminal, to see a Terminal window within Cursor.  
-Type `pwd` to see the current directory, and check you are in the 'sds' directory - like `C:\Users\YourUsername\Documents\Projects\sds` or similar
+Type `pwd` to see the current directory, and check you are in the 'sds' directory - like `C:\Users\YourUsername\projects\sds` or similar
 
 Start by running `uv self update` to make sure you're on the latest version of uv.
 
@@ -114,11 +114,6 @@ If you get an error about "invalid certificate" while running `uv sync`, then pl
 `uv --native-tls sync`  
 And also try this instead:  
 `uv --allow-insecure-host github.com sync`
-
-Finally, run these commands to be ready to use CrewAI in week 3 - but please note that this needs you to have installed Microsoft Build Tools (#4 in the 'gotchas' section at the top of this doc):  
-`uv tool install crewai`   
-Followed by:  
-`uv tool upgrade crewai`  
 
 Checking that everything is set up nicely:  
 1. Confirm that you now have a folder called '.venv' in your project root directory (sds)

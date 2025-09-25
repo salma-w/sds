@@ -6,10 +6,7 @@ Welcome, Mac people!
 
 Setting up a powerful environment to work at the forefront of AI is not as easy as I'd like. It can be challenging. But I really hope these instructions are bullet-proof!
 
-If you hit problems, please don't hesitate to reach out. I am here to get you up and running quickly. There's nothing worse than feeling _stuck_. Message me, email me or LinkedIn message me and I will unstick you quickly!
-
-Email: ed@edwarddonner.com  
-LinkedIn: https://www.linkedin.com/in/eddonner/  
+If you hit problems, please don't hesitate to reach out. I am here to get you up and running quickly.
 
 _If you're looking at this in Cursor, please right click on the filename in the Explorer on the left, and select "Open preview", to view the formatted version._
 
@@ -60,7 +57,7 @@ This creates a new directory `sds` within your Projects folder and downloads the
 
 ### Part 2: Install Cursor
 
-A word about Cursor: it's a cool product, but it's not to everyone's liking. It can also have a habit of being flakey with the AI recommendations. As student Alireza points out, you can use VS Code (or any IDE) in its place if you prefer. Cursor itself is built from VS Code and everything on this course will work fine in either.
+A word about Cursor: it's a cool product, but it's not to everyone's liking. It can also have a habit of being flakey with the AI recommendations. You can use VS Code (or any IDE) in its place if you prefer. Cursor itself is built from VS Code and everything on this course will work fine in either.
 
 1. Visit cursor at https://www.cursor.com/
 2. Click Sign In on the top right, then Sign Up, to create your account
@@ -126,10 +123,6 @@ With uv, you do a few things differently:
 - uv has really terrific docs [here](https://docs.astral.sh/uv/) - well worth a read!
 
 ### Part 4: OpenAI Key
-
-This is OPTIONAL - there's no need to spend money on APIs if you don't want to.
-
-But it is strongly recommended for the best performance of your Agentic system.
 
 If you have concerns about API costs and would prefer to use cheap or free alternatives, please see [this guide](../guides/09_ai_apis_and_ollama.ipynb)  
 This includes instructions for using OpenRouter instead of OpenAI, which may have a more convenient billing system for some countries.
