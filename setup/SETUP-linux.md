@@ -111,15 +111,9 @@ If you get an error about "invalid certificate" while running `uv sync`, then pl
 And also try this instead:  
 `uv --allow-insecure-host github.com sync`
 
-Finally, run these commands to be ready to use CrewAI in week 3:  
-`uv tool install crewai`   
-Followed by:  
-`uv tool upgrade crewai`  
-
 Checking that everything is set up nicely:  
 1. Confirm that you now have a folder called '.venv' in your project root directory (sds)
 2. If you run `uv python list` you should see a Python 3.12 version in your list (there might be several)
-3. If you run `uv tool list` you should see crewai as a tool
 
 Just FYI on using uv:  
 With uv, you do a few things differently:  
