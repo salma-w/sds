@@ -4,12 +4,9 @@ import glob
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 
 from langchain.text_splitter import CharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 
 MODEL = "gpt-4.1-mini"

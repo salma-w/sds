@@ -21,7 +21,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-MODEL = "gpt-4.1-mini"
+MODEL = "gpt-4.1-nano"
 db_name = "vector_db"
 knowledge_base_path = "knowledge-base/*"
 
@@ -95,15 +95,12 @@ def main():
         with gr.Row():
             with gr.Column(scale=1):
                 chatbot = gr.Chatbot(
-                    label="💬 Conversation",
-                    height=600,
-                    type="messages",
-                    show_copy_button=True
+                    label="💬 Conversation", height=600, type="messages", show_copy_button=True
                 )
                 message = gr.Textbox(
                     label="Your Question",
                     placeholder="Ask about Insurellm products, employees, contracts...",
-                    show_label=False
+                    show_label=False,
                 )
 
             with gr.Column(scale=1):
@@ -111,7 +108,7 @@ def main():
                     label="📚 Retrieved Context",
                     value="*Retrieved context will appear here*",
                     container=True,
-                    height=600
+                    height=600,
                 )
 
         message.submit(

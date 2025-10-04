@@ -96,12 +96,19 @@ This comprehensive test set enables evaluation of:
 
 ACTION PLAN FOR THE PROJECT
 
-Please carefully read this module:
+Please carefully read these modules which are working great:
 week2/ingest.py
-
-And this module:
 week2/app.py
 
-And then await my instructions
+Then we need to do this:
+
+1. Write test.py to have a Pydantic object for the test data in tests.jsonl, and a load_tests that loads them all in from tests.jsonl
+2. Write eval.py with:
+
+- A pydantic object RetrievalEval that has MRR, nDCG, and any other key metrics from a retrieval test
+- A pydantic object AnswerEval that has feedback, accuracy, completeness, relevance, with Field descriptions
+- A function evaluate_retrieval(test) that gets the top 10 chunks and calculates a RetrievalEval
+
+And a main function that allows us to call this from the command line and specify a test row number, and it will print the retrieval eval for that test number.
 
 
