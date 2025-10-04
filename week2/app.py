@@ -87,12 +87,32 @@ def main():
     def put_message_in_chatbot(message, history):
         return "", history + [{"role": "user", "content": message}]
 
-    with gr.Blocks() as ui:
+    theme = gr.themes.Soft(font=["Inter", "system-ui", "sans-serif"])
+
+    with gr.Blocks(title="Insurellm Expert Assistant", theme=theme) as ui:
+        gr.Markdown("# 🏢 Insurellm Expert Assistant\nAsk me anything about Insurellm!")
+
         with gr.Row():
-            chatbot = gr.Chatbot(label="Expert", height=800, type="messages")
-            context_markdown = gr.Markdown(height=800)
-        with gr.Row():
-            message = gr.Textbox(label="Chat with Insurellm Expert")
+            with gr.Column(scale=1):
+                chatbot = gr.Chatbot(
+                    label="💬 Conversation",
+                    height=600,
+                    type="messages",
+                    show_copy_button=True
+                )
+                message = gr.Textbox(
+                    label="Your Question",
+                    placeholder="Ask about Insurellm products, employees, contracts...",
+                    show_label=False
+                )
+
+            with gr.Column(scale=1):
+                context_markdown = gr.Markdown(
+                    label="📚 Retrieved Context",
+                    value="*Retrieved context will appear here*",
+                    container=True,
+                    height=600
+                )
 
         message.submit(
             put_message_in_chatbot, inputs=[message, chatbot], outputs=[message, chatbot]
