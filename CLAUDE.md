@@ -16,27 +16,22 @@ Please read all the files in knowledge-base/company/ to learn about the company.
 
 Also review the list of files in the other knowledge-base subdirectories.
 
-I would like to come up with a test set that I can use to evaluate my RAG system.
-
-I would like to test both my RAG retrieval and my question answering.
+The goal is to test both RAG retrieval and question answering.
 
 STRATEGY FOR EVALUATION
 
-I would like to curate some sample questions, such as:
-
+We have curated test questions such as:  
 Who won the prestigious IIOTY award in 2023?
 
-For each question, I would have key words that must be in the retrieved context:
-
+For each question, we have identified key words that must be in the retrieved context:  
 Maxine, Thompson, Innovator
 
-And for each question, I would have a Reference Answer:
-
+And for each question, we have a Reference Answer:  
 Maxine Thompson won the prestigious Insurellm Innovator of the Year (IIOTY) award in 2023.
 
 METRICS
 
-I will then calculate a number of metrics:
+We will calculate a number of metrics:
 
 1. For RAG retrieval, measure MRR and nDCG
 2. For question answering, measure % of key words included, and also use an LLM-as-a-judge with structured outputs:
@@ -48,32 +43,65 @@ I will then calculate a number of metrics:
 }
 3. Also some adversarial testing that it does not invent answers to questions not in context
 
-Your actions:
+The test dataset week2/tests.jsonl has been fully populated with 150 questions.
 
-Please review all the documents and generate 100 test questions based on them!
+QUESTION CATEGORIES & COUNTS:
 
-Create a jsonl document week2/tests.jsonl where each line is a test:
-
-{"question": "Who won the IIOTY award in 2023", "keywords": ["Maxine", "Thompson", "innovator"], "reference_answer": "Maxine Thompson won the prestigious Insurellm Innovator of the Year (IIOTY) award in 2023", "category": "direct_fact"}
-
-QUESTION CATEGORIES:
-
-Current categories in use:
-- `direct_fact`: Direct factual retrieval questions that can be answered from a single document
-- `temporal`: Questions involving dates, sequences, or time-based information
-- `comparative`: Questions comparing different products, policies, people, or entities
-- `numerical`: Questions involving specific numbers, quantities, or statistics
-- `relationship`: Questions about organizational relationships, hierarchies, or connections between entities
+Active categories (150 questions total):
+- `direct_fact`: 70 questions - Direct factual retrieval questions that can be answered from a single document
+- `spanning`: 20 questions - Questions that require information from exactly 2 different documents
+- `temporal`: 20 questions - Questions involving dates, sequences, or time-based information
+- `comparative`: 10 questions - Questions comparing different products, policies, people, or entities
+- `numerical`: 10 questions - Questions involving specific numbers, quantities, or statistics
+- `relationship`: 10 questions - Questions about organizational relationships, hierarchies, or connections between entities
+- `holistic`: 10 questions - Broad questions requiring aggregation or understanding across many documents (intentionally challenging for basic RAG)
 
 Future categories (not yet implemented):
 - `negative`: Questions that have no answer in the knowledge base
 - `adversarial`: Off-topic questions designed to test if the system stays within bounds
-- `spanning`: Questions that require information from multiple documents
-- `holistic`: Questions requiring broader understanding across multiple contexts
 
-You can find useful questions from the existing knowledge-base docs, being sure to take examples from all subdirectories. Do not change the knowledge base; try to take existing facts. Have a broad range of different kinds of retrieval so that the RAG process is thoroughly tested. For now, focus on each question being answered in 1 document; avoid questions that require context from multiple documents.
+JSONL FORMAT:
 
+Each line in tests.jsonl follows this format:
+{"question": "Who won the IIOTY award in 2023", "keywords": ["Maxine", "Thompson", "IIOTY"], "reference_answer": "Maxine Thompson won the prestigious Insurellm Innovator of the Year (IIOTY) award in 2023", "category": "direct_fact"}
 
+IMPORTANT NOTES ON KEYWORDS:
 
+1. Keywords are EXACT strings that appear in the source documents
+2. Keywords are MINIMAL - only critical terms needed for retrieval (typically 2-3 keywords)
+3. Keywords are designed to test if the RAG system retrieves the correct document chunk
+4. For holistic questions, keywords are intentionally minimal since these questions require broad context
+5. All keywords have been verified against actual source documents in week2/knowledge-base/
+
+DATASET COVERAGE:
+
+The 150 questions cover all subdirectories in the knowledge base:
+- company/ (founding, vision, values, office locations, employee counts)
+- products/ (all 8 products: Carllm, Homellm, Lifellm, Healthllm, Bizllm, Markellm, Claimllm, Rellm)
+- contracts/ (32 contracts across all product lines)
+- employees/ (32 employees with various roles, salaries, locations, achievements)
+
+TESTING STRATEGY:
+
+The dataset tests multiple retrieval challenges:
+- Single-document retrieval (direct_fact, temporal, comparative, numerical, relationship)
+- Multi-document retrieval (spanning - requires 2 docs)
+- Broad aggregation/understanding (holistic - requires many docs or reasoning)
+
+This comprehensive test set enables evaluation of:
+1. RAG retrieval accuracy (MRR, nDCG) - using keywords to verify correct chunks retrieved
+2. Question answering quality (LLM-as-a-judge with accuracy/completeness/relevance scores)
+3. Multi-document synthesis capabilities (spanning questions)
+4. Advanced reasoning capabilities (holistic questions)
+
+ACTION PLAN FOR THE PROJECT
+
+Please carefully read this module:
+week2/ingest.py
+
+And this module:
+week2/app.py
+
+And then await my instructions
 
 

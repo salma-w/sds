@@ -4,8 +4,22 @@ from langchain_chroma import Chroma
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.callbacks import BaseCallbackHandler
+from langchain_core.messages import BaseMessage
 import gradio as gr
 from dotenv import load_dotenv
+import logging
+from typing import Any
+from colorama import Fore, Style, init
+
+init(autoreset=True)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
 
 MODEL = "gpt-4.1-mini"
 db_name = "vector_db"
@@ -13,7 +27,21 @@ knowledge_base_path = "knowledge-base/*"
 
 load_dotenv(override=True)
 
-# create a new Chat with OpenAI
+COLORS = {"system": Fore.YELLOW, "human": Fore.GREEN, "ai": Fore.BLUE}
+
+
+class MessageLoggingCallback(BaseCallbackHandler):
+    """Custom callback handler to log actual messages sent to LLM."""
+
+    def on_chat_model_start(
+        self, serialized: dict[str, Any], messages: list[list[BaseMessage]], **kwargs: Any
+    ) -> None:
+        for batch_idx, message_list in enumerate(messages):
+            for msg_idx, msg in enumerate(message_list, 1):
+                color = COLORS.get(msg.type, Fore.WHITE)
+                logger.info(f"{color}{msg.content}{Style.RESET_ALL}")
+
+
 llm = ChatOpenAI(temperature=0.7, model_name=MODEL)
 
 vectorstore = Chroma(persist_directory=db_name, embedding_function=OpenAIEmbeddings())
@@ -30,24 +58,47 @@ Context:
 """
 
 
-def chat(message, history):
+def format_context(context):
+    result = "## Relevant Context\n\n"
+    for doc in context:
+        result += f"### From {doc.metadata['source']}\n\n"
+        result += doc.page_content + "\n\n"
+    return result
+
+
+def chat(history):
     messages = [("system", SYSTEM_PROMPT)]
     for h in history:
-        if h["role"] == "user":
-            messages.append(("user", h["content"]))
-        else:
-            messages.append(("assistant", h["content"]))
+        role = "user" if h["role"] == "user" else "assistant"
+        messages.append((role, h["content"]))
 
-    messages.append(("user", message))
     prompt = ChatPromptTemplate.from_messages(messages)
     question_answer_chain = create_stuff_documents_chain(llm, prompt)
     rag_chain = create_retrieval_chain(retriever, question_answer_chain)
-    response = rag_chain.invoke({"input": message})
-    return response["answer"]
+    callback = MessageLoggingCallback()
+
+    response = rag_chain.invoke({"input": messages[-1][1]}, config={"callbacks": [callback]})
+
+    history.append({"role": "assistant", "content": response["answer"]})
+    return history, format_context(response["context"])
 
 
 def main():
-    gr.ChatInterface(fn=chat, type="messages").launch(inbrowser=True)
+    def put_message_in_chatbot(message, history):
+        return "", history + [{"role": "user", "content": message}]
+
+    with gr.Blocks() as ui:
+        with gr.Row():
+            chatbot = gr.Chatbot(label="Expert", height=800, type="messages")
+            context_markdown = gr.Markdown(height=800)
+        with gr.Row():
+            message = gr.Textbox(label="Chat with Insurellm Expert")
+
+        message.submit(
+            put_message_in_chatbot, inputs=[message, chatbot], outputs=[message, chatbot]
+        ).then(chat, inputs=chatbot, outputs=[chatbot, context_markdown])
+
+    ui.launch(inbrowser=True)
 
 
 if __name__ == "__main__":
