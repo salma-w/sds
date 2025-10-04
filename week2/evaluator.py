@@ -9,11 +9,11 @@ load_dotenv(override=True)
 
 # Color coding thresholds - Retrieval
 MRR_GREEN = 0.9
-MRR_AMBER = 0.7
+MRR_AMBER = 0.75
 NDCG_GREEN = 0.9
-NDCG_AMBER = 0.7
+NDCG_AMBER = 0.75
 COVERAGE_GREEN = 90.0
-COVERAGE_AMBER = 70.0
+COVERAGE_AMBER = 75.0
 
 # Color coding thresholds - Answer (1-5 scale)
 ANSWER_GREEN = 4.0
@@ -54,7 +54,11 @@ def get_color(value: float, metric_type: str) -> str:
 
 
 def format_metric_html(
-    label: str, value: float, metric_type: str, is_percentage: bool = False, score_format: bool = False
+    label: str,
+    value: float,
+    metric_type: str,
+    is_percentage: bool = False,
+    score_format: bool = False,
 ) -> str:
     """Format a metric with color coding."""
     color = get_color(value, metric_type)
@@ -210,7 +214,7 @@ def main():
                     x="Category",
                     y="Average Accuracy",
                     title="Average Accuracy by Category",
-                    y_lim=[0, 5],
+                    y_lim=[1, 5],
                     height=400,
                 )
 

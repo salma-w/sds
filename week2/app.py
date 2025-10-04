@@ -1,9 +1,3 @@
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_chroma import Chroma
-
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.messages import BaseMessage
 import gradio as gr
@@ -11,6 +5,8 @@ from dotenv import load_dotenv
 import logging
 from typing import Any
 from colorama import Fore, Style, init
+
+from answer import answer_question
 
 init(autoreset=True)
 
@@ -20,10 +16,6 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger(__name__)
-
-MODEL = "gpt-4.1-nano"
-db_name = "vector_db"
-knowledge_base_path = "knowledge-base/*"
 
 load_dotenv(override=True)
 
@@ -42,22 +34,6 @@ class MessageLoggingCallback(BaseCallbackHandler):
                 logger.info(f"{color}{msg.content}{Style.RESET_ALL}")
 
 
-llm = ChatOpenAI(temperature=0.7, model_name=MODEL)
-
-vectorstore = Chroma(persist_directory=db_name, embedding_function=OpenAIEmbeddings())
-retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
-
-SYSTEM_PROMPT = """
-You are a knowledgeable, friendly assistant representing the company Insurellm.
-You are chatting with a user about Insurellm.
-If relevant, use the given context to answer any question.
-If you don't know the answer, say so.
-
-Context:
-{context}
-"""
-
-
 def format_context(context):
     result = "## Relevant Context\n\n"
     for doc in context:
@@ -66,21 +42,15 @@ def format_context(context):
     return result
 
 
-def chat(history):
-    messages = [("system", SYSTEM_PROMPT)]
-    for h in history:
-        role = "user" if h["role"] == "user" else "assistant"
-        messages.append((role, h["content"]))
+async def chat(history):
+    # Get the last user message
+    last_message = history[-1]["content"]
 
-    prompt = ChatPromptTemplate.from_messages(messages)
-    question_answer_chain = create_stuff_documents_chain(llm, prompt)
-    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
-    callback = MessageLoggingCallback()
+    # Use shared answer_question function
+    answer, context = await answer_question(last_message)
 
-    response = rag_chain.invoke({"input": messages[-1][1]}, config={"callbacks": [callback]})
-
-    history.append({"role": "assistant", "content": response["answer"]})
-    return history, format_context(response["context"])
+    history.append({"role": "assistant", "content": answer})
+    return history, format_context(context)
 
 
 def main():

@@ -4,14 +4,15 @@ import glob
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 
 from langchain.text_splitter import CharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
-
+from embeddings import get_embeddings
 from dotenv import load_dotenv
 
-MODEL = "gpt-4.1-mini"
+MODEL = "gpt-4.1-nano"
 db_name = "vector_db"
 knowledge_base_path = "knowledge-base/*"
+
+USE_HUGGINGFACE = True
 
 load_dotenv(override=True)
 
@@ -38,7 +39,7 @@ def create_chunks(documents):
 
 
 def create_embeddings(chunks):
-    embeddings = OpenAIEmbeddings()
+    embeddings = get_embeddings()
 
     if os.path.exists(db_name):
         Chroma(persist_directory=db_name, embedding_function=embeddings).delete_collection()

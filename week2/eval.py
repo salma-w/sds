@@ -2,36 +2,17 @@ import sys
 import math
 import asyncio
 from pydantic import BaseModel, Field
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_chroma import Chroma
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.prompts import ChatPromptTemplate
 from litellm import acompletion
 from dotenv import load_dotenv
 
 from test import TestQuestion, load_tests
+from answer import answer_question, fetch_context
 
 load_dotenv(override=True)
 
 MODEL = "gpt-4.1-nano"
 db_name = "vector_db"
 BATCH_SIZE = 5
-
-SYSTEM_PROMPT = """
-You are a knowledgeable, friendly assistant representing the company Insurellm.
-You are chatting with a user about Insurellm.
-If relevant, use the given context to answer any question.
-If you don't know the answer, say so.
-
-Context:
-{context}
-"""
-
-# Initialize global vectorstore and retriever for answer evaluation
-vectorstore = Chroma(persist_directory=db_name, embedding_function=OpenAIEmbeddings())
-retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
-llm = ChatOpenAI(temperature=0.7, model_name=MODEL)
 
 
 class RetrievalEval(BaseModel):
@@ -108,12 +89,8 @@ def evaluate_retrieval(test: TestQuestion, k: int = 10) -> RetrievalEval:
     Returns:
         RetrievalEval object with MRR, nDCG, and keyword coverage metrics
     """
-    # Initialize retriever
-    vectorstore = Chroma(persist_directory=db_name, embedding_function=OpenAIEmbeddings())
-    retriever = vectorstore.as_retriever(search_kwargs={"k": k})
-
-    # Retrieve documents
-    retrieved_docs = retriever.invoke(test.question)
+    # Retrieve documents using shared answer module
+    retrieved_docs = fetch_context(test.question)
 
     # Calculate MRR (average across all keywords)
     mrr_scores = [calculate_mrr(keyword, retrieved_docs) for keyword in test.keywords]
@@ -147,15 +124,8 @@ async def evaluate_answer(test: TestQuestion) -> tuple[AnswerEval, str, list]:
     Returns:
         Tuple of (AnswerEval object, generated_answer string, retrieved_docs list)
     """
-    # Get RAG response (using global retriever and llm)
-    messages = [("system", SYSTEM_PROMPT), ("user", test.question)]
-    prompt = ChatPromptTemplate.from_messages(messages)
-    question_answer_chain = create_stuff_documents_chain(llm, prompt)
-    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
-
-    response = await rag_chain.ainvoke({"input": test.question})
-    generated_answer = response["answer"]
-    retrieved_docs = response["context"]
+    # Get RAG response using shared answer module
+    generated_answer, retrieved_docs = await answer_question(test.question)
 
     # Format context for judge
     context_str = "\n\n".join(
