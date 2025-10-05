@@ -3,7 +3,7 @@ import glob
 
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from embeddings import get_embeddings
 from dotenv import load_dotenv
@@ -33,7 +33,7 @@ def fetch_documents():
 
 
 def create_chunks(documents):
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     chunks = text_splitter.split_documents(documents)
     return chunks
 
