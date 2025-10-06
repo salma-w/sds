@@ -21,7 +21,6 @@ Context:
 {context}
 """
 
-# Initialize global components
 vectorstore = Chroma(persist_directory=db_name, embedding_function=get_embeddings())
 retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
 llm = ChatOpenAI(temperature=0.7, model_name=MODEL)
@@ -30,25 +29,13 @@ llm = ChatOpenAI(temperature=0.7, model_name=MODEL)
 def fetch_context(question: str) -> list:
     """
     Retrieve relevant context documents for a question.
-
-    Args:
-        question: The question to retrieve context for
-
-    Returns:
-        List of retrieved documents
     """
     return retriever.invoke(question)
 
 
 async def answer_question(question: str) -> tuple[str, list]:
     """
-    Answer a question using RAG (async).
-
-    Args:
-        question: The question to answer
-
-    Returns:
-        Tuple of (answer string, retrieved_docs list)
+    Answer a question using RAG and return the answer and the retrieved context
     """
     messages = [("system", SYSTEM_PROMPT), ("user", question)]
     prompt = ChatPromptTemplate.from_messages(messages)
