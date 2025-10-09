@@ -12,7 +12,7 @@ load_dotenv(override=True)
 
 MODEL = "gpt-4.1-nano"
 db_name = "vector_db"
-BATCH_SIZE = 5
+BATCH_SIZE = 1
 
 
 class RetrievalEval(BaseModel):
@@ -204,7 +204,7 @@ async def evaluate_all_answers():
 async def run_cli_evaluation(test_number: int):
     """Run evaluation for a specific test (async helper for CLI)."""
     # Load tests
-    tests = load_tests("tests.jsonl")
+    tests = load_tests("week2/tests.jsonl")
 
     if test_number < 0 or test_number >= len(tests):
         print(f"Error: test_row_number must be between 0 and {len(tests) - 1}")

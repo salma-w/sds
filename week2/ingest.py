@@ -5,7 +5,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from embeddings import get_embeddings
 from dotenv import load_dotenv
-
+from langchain_experimental.text_splitter import SemanticChunker
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 MODEL = "gpt-4.1-nano"
 db_name = "vector_db"
 knowledge_base_path = "knowledge-base/*"
@@ -30,8 +31,16 @@ def fetch_documents():
     return documents
 
 
+
+
 def create_chunks(documents):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(chunk_size=800, chunk_overlap=120, separators=["\n\n", "\n", ".", " ", ""])
+    chunks = text_splitter.split_documents(documents)
+    return chunks
+
+def create_chunks_Semantic(documents):
+    embeddings = get_embeddings()
+    text_splitter = SemanticChunker(embeddings=embeddings,breakpoint_threshold_type='percentile',breakpoint_threshold_amount=95)
     chunks = text_splitter.split_documents(documents)
     return chunks
 
@@ -57,6 +66,6 @@ def create_embeddings(chunks):
 
 if __name__ == "__main__":
     documents = fetch_documents()
-    chunks = create_chunks(documents)
+    chunks = create_chunks_Semantic(documents)
     create_embeddings(chunks)
     print("Ingestion complete")
